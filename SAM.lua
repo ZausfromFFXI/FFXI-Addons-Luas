@@ -20,14 +20,10 @@ end
 function user_setup()
 
     -- Weapon selector
-    state.Weapon = M{'Kusanagi','Masamune','ShiningOne','Amanomurakumo','Murasamemaru','Norifusa'}
+    state.Weapon = M{'Kusanagi','Masamune','ShiningOne','Amanomurakumo','Murasamemaru','Norifusa','Dojikiri'}
 
     -- Engage selector
-    state.OffenseMode:options(
-        'Engage',
-        'GlassCannon',
-        'SubtleBlow'
-    )
+    state.OffenseMode:options('Engage','GlassCannon','SubtleBlow')
 
     state.OffenseMode:set('Engage')
 
@@ -37,6 +33,12 @@ function user_setup()
 
     -- F10 = cycle engage set
     send_command('bind f11 gs c cycle OffenseMode')
+	    -- all your existing state options
+    -- all your existing binds
+    -- etc.
+
+    select_default_macro_book()
+    set_lockstyle()
 end
 
 			--WeaponSkills
@@ -48,6 +50,8 @@ end
     send_command('bind ^numpad1 input /ws "Tachi: Kasha" <t>')
     send_command('bind ^numpad2 input /ws "Tachi: Yukikaze" <t>')
     send_command('bind ^numpad3 input /ws "Tachi: Ageha" <t>')
+
+
 
 
 
@@ -78,30 +82,14 @@ function init_gear_sets()
     -- ========================================================
 
     sets.Weapon = {}
-
-    sets.Weapon.Kusanagi = {
-        main = "Kusanagi"
-    }
-
-    sets.Weapon.Masamune = {
-        main = "Masamune"
-    }
-
-    sets.Weapon.ShiningOne = {
-        main = "Shining One"
-    }
-
-    sets.Weapon.Amanomurakumo = {
-        main = "Amanomurakumo"
-    }
-
-    sets.Weapon.Murasamemaru = {
-        main = "Murasamemaru"
-    }
-
-    sets.Weapon.Norifusa = {
-        main = "Norifusa +1"
-    }
+	
+	sets.Weapon.Kusanagi = {main = "Kusanagi"}
+	sets.Weapon.Masamune = {main = "Masamune"}
+	sets.Weapon.ShiningOne = {main = "Shining One"}
+	sets.Weapon.Amanomurakumo = {main = "Amanomurakumo"}
+	sets.Weapon.Murasamemaru = {main = "Murasamemaru"}
+	sets.Weapon.Norifusa = {main = "Norifusa +1"}
+	sets.Weapon.Dojikiri = {main="Dojikiri Yasutsuna"}
 -- ============================================================
 -- JA's and Other Sets
 -- ============================================================
@@ -194,20 +182,20 @@ function init_gear_sets()
 		back="Smertrios's Mantle"
 
     }
-
 sets.buff.Phalanx = {
-    head = "YOUR PHALANX HEAD",
-    body = "YOUR PHALANX BODY",
-    hands = "YOUR PHALANX HANDS",
-    legs = "YOUR PHALANX LEGS",
-    feet = "YOUR PHALANX FEET"
+    head = "YOUR HEAD",
+    body = "YOUR BODY",
+    hands = "YOUR HANDS",
+    legs = "YOUR LEGS",
+    feet = "YOUR FEET"
 }
+
 
 
 --=============================================================
 -- 							WS SETS
 -- ============================================================
- sets.precast.WS = {
+		sets.precast.WS = {
 				sub="Utu Grip",
 				ammo="Knobkierrie",
 				head={ name="Mpaca's Cap", augments={'Path: A',}},
@@ -283,30 +271,80 @@ function spectral_jig()
     end
 
 end
-windower.register_event('action', function(act)
+-- local packets = require('packets')
 
-    -- Someone is casting a spell
-    if act.category == 4 then
+-- windower.register_event('incoming chunk', function(id, data)
 
-        -- Phalanx = spell ID 106
-        if act.param == 106 then
+    -- if id ~= 0x028 then
+        -- return
+    -- end
 
-            -- Check all targets of the spell
-            for _, target in pairs(act.targets) do
+    -- local packet = packets.parse('incoming', data)
 
-                -- The spell is targeting me
-                if target.id == player.id then
+    -- --==============================================================
+    -- -- PHALANX / PHALANX II CAST START
+    -- --==============================================================
+    -- if packet['Category'] == 8 then
 
-                    equip(sets.buff.Phalanx)
+        -- if packet['Target 1 ID'] == player.id then
 
-                    add_to_chat(122, 'Incoming Phalanx - Phalanx gear equipped.')
+            -- local spell_id = packet['Target 1 Action 1 Param']
 
-                    return
-                end
-            end
-        end
-    end
-end)
+            -- -- Phalanx = 106
+            -- -- Phalanx II = 107
+            -- if spell_id == 106 or spell_id == 107 then
+
+                -- equip(sets.buff.Phalanx)
+
+                -- add_to_chat(122, '>>> INCOMING PHALANX - GEAR EQUIPPED <<<')
+
+            -- end
+        -- end
+    -- end
+
+
+    -- --==============================================================
+    -- -- PHALANX / PHALANX II LANDS
+    -- --==============================================================
+    -- if packet['Category'] == 4 then
+
+        -- if packet['Target 1 ID'] == player.id then
+
+            -- local spell_id = packet['Param']
+
+            -- -- Phalanx = 106
+            -- -- Phalanx II = 107
+            -- if spell_id == 106 or spell_id == 107 then
+
+                -- add_to_chat(122, '>>> PHALANX LANDED - RETURNING TO NORMAL GEAR <<<')
+
+                -- send_command('gs c update')
+
+            -- end
+        -- end
+    -- end
+
+-- end)
+
+function select_default_macro_book()
+
+    -- Macro Page 1, Book 10
+    set_macro_page(1, 13)
+
+end
+
+
+function set_lockstyle()
+
+    -- Lockstyle 20
+    send_command('wait 2; input /lockstyleset 113')
+
+end
+
+
+
+
+
 
 
 
